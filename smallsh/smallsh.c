@@ -16,8 +16,8 @@ char* prompt_line() {
     size_t buffer_size = 0;    
     printf(": ");
     fflush(stdout);
-    get_line(&curr_prompt, &buffer_size, stdin);
-    printf("Here is the prompt entered: %s\n", prompt);
+    getline(&curr_prompt, &buffer_size, stdin);
+    printf("Here is the prompt entered: %s\n", curr_prompt);
 
     return prompt;
 
