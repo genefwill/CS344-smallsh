@@ -9,6 +9,10 @@
 #include <unistd.h>
 #include <string.h>
 
+char *DIRECT;
+
+void commands(const char * args);
+
 char* prompt_line() {
     char* prompt;
     char* curr_prompt = NULL;
@@ -17,17 +21,38 @@ char* prompt_line() {
     printf(": ");
     fflush(stdout);
     getline(&curr_prompt, &buffer_size, stdin);
-    printf("Here is the prompt entered: %s\n", curr_prompt);
-
+    //printf("Here is the prompt entered: %s\n", curr_prompt);
+    fflush(stdout);
+    commands(curr_prompt);
     return prompt;
 
 
 }
 
+void commands(const char * args) {
+    if ((args == NULL || strcmp(args, "#") == 10)) {
+    } else if (strcmp(args, "cd") == 10){
+        printf("cd");
+    } else if (strcmp(args, "exit") == 10) {
+        printf("exit");
+    }else if (strcmp(args, "status") == 10) {
+        printf("status");
+    } else {
+        printf("Something else: ");
+        printf("%s\n", args);
+        printf("%d", strcmp(args, "cd"));
+    }
+}
+
 
 int main (int argc, char* argv[]) {
 
-    prompt_line();
+    DIRECT = getenv("PWD");
+    while(1) {
+
+        prompt_line();
+
+    }
     return 0;
 
 
