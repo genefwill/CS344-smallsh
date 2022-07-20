@@ -10,6 +10,7 @@
 #include <string.h>
 
 char *DIRECT;
+int running = 1;
 
 void commands(const char * args);
 
@@ -35,6 +36,7 @@ void commands(const char * args) {
         printf("cd");
     } else if (strcmp(args, "exit") == 10) {
         printf("exit");
+        running = 0;
     }else if (strcmp(args, "status") == 10) {
         printf("status");
     } else {
@@ -48,7 +50,7 @@ void commands(const char * args) {
 int main (int argc, char* argv[]) {
 
     DIRECT = getenv("PWD");
-    while(1) {
+    while(running) {
 
         prompt_line();
 
