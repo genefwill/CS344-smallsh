@@ -9,8 +9,12 @@
 #include <unistd.h>
 #include <string.h>
 
+#define MAX_INPUT_LEN 2048
+#define MAX_ARGS 512
+
 char *DIRECT;
 int running = 1;
+
 
 void commands(const char * args);
 
@@ -22,21 +26,29 @@ char* prompt_line() {
     printf(": ");
     fflush(stdout);
     getline(&curr_prompt, &buffer_size, stdin);
+    if (strlen(curr_prompt) == 1) {
+        return curr_prompt;
+    }
+    //curr_prompt[strcspn(curr_prompt, "\n")] = "\0";
     //printf("Here is the prompt entered: %s\n", curr_prompt);
     fflush(stdout);
     commands(curr_prompt);
-    return prompt;
+    //printf("%d", curr_prompt);
+    return curr_prompt;
 
 
 }
 
 void commands(const char * args) {
-    if ((args == NULL || strcmp(args, "#") == 10)) {
+    printf("%s", args);
+    if (strcmp(args, "#") == 10) {
+        printf("blank");
     } else if (strcmp(args, "cd") == 10){
         printf("cd");
     } else if (strcmp(args, "exit") == 10) {
         printf("exit");
-        running = 0;
+        exit(0);
+
     }else if (strcmp(args, "status") == 10) {
         printf("status");
     } else {
@@ -50,6 +62,8 @@ void commands(const char * args) {
 int main (int argc, char* argv[]) {
 
     DIRECT = getenv("PWD");
+    int pid = getpid();
+
     while(running) {
 
         prompt_line();
