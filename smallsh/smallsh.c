@@ -14,9 +14,24 @@
 
 char *DIRECT;
 int running = 1;
+int pid_count = 0;
+bool fgFlag = false;
 
 
 void commands(const char * args);
+
+struct commands_entered {
+    char * commands;
+    char * args_num[MAX_ARGS];
+    int count;
+    char *file_input;
+    char *file_output;
+    int background_running;
+}
+
+struct commands_structure input_parse(char* curr_prompt, bool fgFlag) {
+    struct commands_structure* new_command = malloc(sizeof(struct commands_structure));
+}
 
 char* prompt_line() {
     char* prompt;
@@ -44,7 +59,8 @@ void commands(const char * args) {
     if (strcmp(args, "#") == 10) {
         printf("blank");
     } else if (strcmp(args, "cd") == 10){
-        printf("cd");
+        
+        chdir(getenv("PWD"));
     } else if (strcmp(args, "exit") == 10) {
         printf("exit");
         exit(0);
