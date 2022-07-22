@@ -74,10 +74,59 @@ int runcommands(char* command[], char* inputFile, char* outputFile, int runBG)
 	int childStatus;
 	int exitStatus = 1;
 	int sourceFD;				
-	int targetFD;				
+	int targetFD;	
+    char * change_dir;
+    char* token;
+    char* dir_name;			
 	
 	char *newargv[] = {command[0], command[1], command[2]};
 	struct sigaction SIGINT_action = {0};
+
+        if (strcmp(command[0], "exit") == 0) {
+        if(child_bpid != 0) {
+            kill(child_bpid, 9);
+        }
+        exit(0);
+    } else if(strcmp(command[0], "cd") == 0) {
+        printf("%s", command[1]);
+        change_dir = calloc(strlen(command[1]) + 1, sizeof(char));
+        strcpy(command[1], token);
+        if (token) {
+            dir_name = calloc(strlen(token), sizeof(char));
+            strncpy(dir_name, token, strlen(token)-1);
+
+            if (strstr(dir_name, "$$")) {
+                int pid = getpid();
+                char* temp_name = calloc(strlen(dir_name)-2, sizeof(char));
+                strncpy(temp_name, dir_name, strlen(dir_name)-2);
+
+                sprintf(dir_name, "%i", pid);
+                strcat(temp_name, dir_name);
+                strcpy(dir_name, temp_name);
+                free(temp_name);
+            }
+
+            if (chdir(dir_name) != 0) {
+                perror(dir_name);
+                memset(dir_name, '\0', sizeof(dir_name));
+                fflush(stdout);
+            }
+
+
+        } else  {
+            chdir(getenv("HOME"));
+    } 
+    }
+    else if (strcmp(command[0], "status") == 0) {
+            if (exit_status == 0 || exit_status == 1) {
+                printf("exit value %i\n", exit_status);
+                return exit_status;
+            } else {
+                printf("terminated by signal %i\n", exit_status);
+                return exit_status;
+            }
+            fflush(stdout);
+    }
 
 	pid_t spawnpid = fork();
 
@@ -297,6 +346,7 @@ char* prompt_line() {
     if (line_read == -1){
         printf("Error: line could not be read\n");
     }
+    /**
     if (strncmp(curr_prompt, "exit", 4) == 0) {
         if(child_bpid != 0) {
             kill(child_bpid, 9);
@@ -348,6 +398,7 @@ char* prompt_line() {
         }
     }
     controlCZUsed = 0;
+    **/
 
     //parse_input(curr_prompt);
     //printf("%d", curr_prompt);
